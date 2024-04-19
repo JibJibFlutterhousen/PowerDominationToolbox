@@ -37,4 +37,4 @@ Dataset_2.g6 contains 665, connected, Erdos-Renyi random graphs on 80 vertices w
 
 ## Funding
 This project was sponsored, in part, by the Air Force Research Laboratory via the Autonomy Technology Research Center and Wright State University.
-This research was also supported by Air Force Office of Scientific Research award 23RYCOR004, and is Distribution A under the reference number APRS-RYA-2023-05-00002 and APRS-RYA-2024-03-00002.
+This research was also supported by Air Force Office of Scientific Research award 23RYCOR004, and is Distribution A under the reference number AFRL-2023-2384 and AFRL-2024-1739.
