@@ -1980,7 +1980,7 @@ def PDT_pdn(Input_graph:nx.classes.graph=nx.null_graph(), Number_workers:int=0):
     Number_workers = max(1,multiprocessing.cpu_count()-1)  if not Number_workers else Number_workers
 
     #Semantically, the power dominating number is the length of a minimum power dominating set, so we have to find a minimum power dominating set
-    PDN = len(PDT_minpds(Input_graph, Number_workers))
+    PDN = len(PDT_minpds(Input_graph, Number_workers=Number_workers))
 
     #Now we can return this number
     return PDN
