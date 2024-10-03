@@ -1771,9 +1771,9 @@ def PDT_minpds_connected(Input_graph:nx.classes.graph=nx.null_graph(), Contracte
         qual_score_dictionary = determine_qual_scores(Input_graph, valid_vertices, Blues, PreferredVertices, Contracted)
         ActiveVertices = sorted(valid_vertices, key=lambda x:qual_score_dictionary[x], reverse=True)
 
-    #If the vertex with highest qualitative forms a power dominating set in conjunction with pref, then we can return
-    if qual_score_dictionary[ActiveVertices[0]] == Input_graph.number_of_nodes():
-        return [*PreferredVertices, ActiveVertices[0]]
+        #If the vertex with highest qualitative forms a power dominating set in conjunction with pref, then we can return
+        if qual_score_dictionary[ActiveVertices[0]] == Input_graph.number_of_nodes():
+            return [*PreferredVertices, ActiveVertices[0]]
 
     # If the entrance of C_4 forts has not been calculated, then we calculate it.
     if not CycleEntrances:
