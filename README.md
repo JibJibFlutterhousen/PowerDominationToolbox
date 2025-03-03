@@ -4,7 +4,7 @@
 To maintain compatability with SageMath and the Minimum Rank Sage Library, the following commands will load this library:
 
 ```python
-URL = 'https://raw.githubusercontent.com/JibJibFlutterhousen/PowerDominationToolbox/main/src/powerdominationtoolbox.py'
+URL = 'https://raw.githubusercontent.com/JibJibFlutterhousen/PowerDominationToolbox/main/src/powerdominationtoolbox/powerdominationtoolbox.py'
 load(URL)
 ```
 
