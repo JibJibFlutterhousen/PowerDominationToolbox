@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "powerdominationtoolbox"
+version = "2.5"
+authors = [
+  { name="Johnathan Koch", email="jkoch@appliedres.com" },
+]
+description = "A package for research into power domination and variations"
+license = {text = "MIT License"}
+requires-python = ">=3.8"
+dependencies = [
+  "matplotlib",
+  "networkx",
+  "numpy",
+  "scipy",
+  "sympy"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+readme = "README.md"
+[project.urls]
+Homepage = "https://github.com/JibJibFlutterhousen/PowerDominationToolbox"
+Documentation = "https://arxiv.org/abs/2305.13446"
