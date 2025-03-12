@@ -1,6 +1,6 @@
 from .powerdominationtoolbox import BarbellGraph, CheckForPDSOfSize, CheckForPDSWithAdditional, ContractGraph, CrabGraph, Dominate, IEEE118, JLBW_minpds, MutatedZimGraph, NewEnglandGraph, PDT_minpds, PDT_minpds_connected, PDT_pdn, PowerDominate, Pref, ZeroForce, ZimGraph, active_vertices, allminpds, allpds_of_size, approximate_order_phi, closed_neighborhood, determine_qual_scores, display_n_placement_polynomials_up_to_equivalency, entrance, fpdn, fragile_binomial_coefficients, fragile_expected_value_polynomial, fragile_placement_attributes, hasTwoLeaves, induced_4_cycles, induced_cycle_forts, intersects_non_trivially_with_all, isFPDS, isKFPDS, isKRPDS, isPDS, isZFS, isZeroForcingFort, is_PDS_partial, kfpdn, krpdn, maxfpds, min_kfpds, min_krpds, n_placement_polynomials, n_placement_polynomials_up_to_equivalency, parallel_allpds_of_size, pdDeletedComponent, power_dominate_partial, reduce_cycle_forts
 
-__all__ == [
+__all__ = [
     'BarbellGraph',
     'CheckForPDSOfSize',
     'CheckForPDSWithAdditional',
