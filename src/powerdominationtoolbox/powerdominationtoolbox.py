@@ -61,6 +61,8 @@ from collections.abc import Callable, Sequence
 
 
 if __name__ == '__main__' and hasattr(sys, 'ps1'):
+    import os
+    sys.path.append(os.path.join(os.path.dirname(os.getcwd()), 'src', 'powerdominationtoolbox'))
     import powerdominationtoolbox as pdt
 
 
@@ -176,6 +178,34 @@ if __name__ == '__main__':
         fig.show()
 
 
+# To maintain compatability with SageMath graph objects, we include the following function that converts a sagemath graph object into a networkx graph object.
+
+# In[10]:
+
+
+def sage_to_networkx_graph(Input_graph) -> nx.Graph:
+    '''
+    INPUT
+    
+    Input_graph - a networkx graph object
+      This is the graph to be converted to a networkx Graph object
+    
+    OUTPUT
+    
+    output_graph - a networkx graph object
+      This is a copy of the vertex and edges of the input graph
+    '''
+    
+    if not (hasattr(Input_graph, 'vertices') and hasattr(Input_graph, 'edges')):
+        raise RuntimeError('The provided graph does not have both a vertices and edges property')
+    
+    output_graph = nx.Graph()
+    output_graph.add_nodes_from(Input_graph.vertices())
+    output_graph.add_edges_from([(edge[0], edge[1]) for edge in Input_graph.edges()])
+    
+    return output_graph
+
+
 # Below is the redesigned zeros game function. The inputs are a networkx graph, and a list of vertices within this graph to be initially colored blue (SeedSet). As a note, SeedSet is a list of whichever data type the vertices in the graph are. If node names are strings, then SeedSet must be a list of strings, if node names are tuples, then SeedSet must be a list of tuples.
 # 
 # Propagation continues as follows:
@@ -184,7 +214,7 @@ if __name__ == '__main__':
 # 
 # This function is a rewrite of the function found at https://github.com/jasongrout/minimum_rank/blob/master/minrank.py entitled "zerosgame" with variable names changed for clarity, as well as commentary to match other methods in this toolbox.
 
-# In[10]:
+# In[11]:
 
 
 def ZeroForce(Input_graph:nx.classes.graph=nx.null_graph(), SeedSet:Sequence=list()):
@@ -242,7 +272,7 @@ def ZeroForce(Input_graph:nx.classes.graph=nx.null_graph(), SeedSet:Sequence=lis
 
 # To demonstrate ZeroForce, we will start with two adjacent vertices of a cycle graph colored blue. This then results in the entire graph being colored.
 
-# In[11]:
+# In[12]:
 
 
 if __name__ == '__main__':
@@ -273,7 +303,7 @@ if __name__ == '__main__':
 
 # The closed neighborhood of a set of vertices is defined to be the set of neighbors of vertices in the given set, unioned with the given set itself.
 
-# In[12]:
+# In[13]:
 
 
 def closed_neighborhood(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:Sequence=list()):
@@ -295,7 +325,7 @@ def closed_neighborhood(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:S
 
 # The closed neighborhood of vertex 0 is given below as example.
 
-# In[13]:
+# In[14]:
 
 
 if __name__ == '__main__':
@@ -324,7 +354,7 @@ if __name__ == '__main__':
 
 # The following function, Dominate, has been restructured to use the function closed_neighborhood
 
-# In[14]:
+# In[15]:
 
 
 def Dominate(Input_graph:nx.classes.graph=nx.null_graph(), SeedSet:Sequence=set()):
@@ -347,7 +377,7 @@ def Dominate(Input_graph:nx.classes.graph=nx.null_graph(), SeedSet:Sequence=set(
 
 # To demonstrate Dominate, we observe that dominating on a single node in the clique of the barbell graph, the entire clique is colored blue.
 
-# In[15]:
+# In[16]:
 
 
 if __name__ == '__main__':
@@ -378,7 +408,7 @@ if __name__ == '__main__':
 
 # The following function, PowerDominate, is updated such that the comments reflect the correct objects that are returned.
 
-# In[16]:
+# In[17]:
 
 
 def PowerDominate(Input_graph:nx.classes.graph=nx.null_graph(), SeedSet:Sequence=set()):
@@ -410,7 +440,7 @@ def PowerDominate(Input_graph:nx.classes.graph=nx.null_graph(), SeedSet:Sequence
 
 # To demonstrate PowerDominate, we observe that power dominating on a single node in the clique of the barbell graph, the entire clique is colored blue, as well as the long path.
 
-# In[17]:
+# In[18]:
 
 
 if __name__ == '__main__':
@@ -441,7 +471,7 @@ if __name__ == '__main__':
 
 # The following function, isPDS, has been modified to entrance a keyword-only argument that controls whether the input placement is given as a return value. This is used in the new implementation of parallel methods.
 
-# In[18]:
+# In[19]:
 
 
 def isPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=set(), **kwargs):
@@ -485,7 +515,7 @@ def isPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=s
 
 # To demonstrate isPDS, we observe a vertex in one of the cliques of the barbell graph is not a power dominating set, while a vertex in each of the cliques is a power dominating set.
 
-# In[19]:
+# In[20]:
 
 
 if __name__ == '__main__':
@@ -502,7 +532,7 @@ if __name__ == '__main__':
 
 # We now have the logic to implement to implement the simplest version of a search for a minimum power dominating set.
 
-# In[20]:
+# In[21]:
 
 
 def JLBW_minpds(Input_graph:nx.classes.graph=nx.null_graph()):
@@ -533,7 +563,7 @@ def JLBW_minpds(Input_graph:nx.classes.graph=nx.null_graph()):
 
 # Notice the minimum power dominating set of the Zim graph as determined by this algorithm, and how there is a PMU on a degree 2 vertex.
 
-# In[21]:
+# In[22]:
 
 
 if __name__ == '__main__':
@@ -560,7 +590,7 @@ if __name__ == '__main__':
 
 # We now include a function that allows power domination to be done on a graph that already has blue vertices.
 
-# In[22]:
+# In[23]:
 
 
 def power_dominate_partial(Input_graph:nx.classes.graph=nx.null_graph(), New_pmus:Sequence=list(), Blues:Sequence=list()):
@@ -584,7 +614,7 @@ def power_dominate_partial(Input_graph:nx.classes.graph=nx.null_graph(), New_pmu
 
 # To observe power_dominate_partial, see that if one of the vertices in the terminal triangle of the Zim graph, vertex 2 observes the entire graph.
 
-# In[23]:
+# In[24]:
 
 
 if __name__ == '__main__':
@@ -614,7 +644,7 @@ if __name__ == '__main__':
 
 # To implement the parallel check, we compile the previous function into one not unlike isPDS, that returns whether or not a given set forms a power dominating set of the graph in conjunction with the blue vertices already on the graph.
 
-# In[24]:
+# In[25]:
 
 
 def is_PDS_partial(Input_graph:nx.classes.graph=nx.null_graph(), New_pmus:Sequence=list(), Blues:Sequence=list(), **kwargs):
@@ -654,7 +684,7 @@ def is_PDS_partial(Input_graph:nx.classes.graph=nx.null_graph(), New_pmus:Sequen
 
 # We observe, again, that the vertex 2 forms a power dominating set of the Zim graph when 10 is already colored blue.
 
-# In[25]:
+# In[26]:
 
 
 if __name__ == '__main__':
@@ -670,7 +700,7 @@ if __name__ == '__main__':
 
 # The following is a re-implication of the graph contraction, with the alteration that this function now contracts internal paths to a single degree 2 vertex.
 
-# In[26]:
+# In[27]:
 
 
 def ContractGraph(Input_graph:nx.classes.graph.Graph=nx.null_graph()):
@@ -753,7 +783,7 @@ def ContractGraph(Input_graph:nx.classes.graph.Graph=nx.null_graph()):
 
 # View the following example of how this version of a graph contraction removes more vertices.
 
-# In[27]:
+# In[28]:
 
 
 if __name__ == '__main__':
@@ -774,7 +804,7 @@ if __name__ == '__main__':
 
 # The following function is leveraged when determining Pref($G$) in a quicker manner.
 
-# In[28]:
+# In[29]:
 
 
 def hasTwoLeaves(Input_graph:nx.classes.graph=nx.null_graph(), Vertex=None):
@@ -804,7 +834,7 @@ def hasTwoLeaves(Input_graph:nx.classes.graph=nx.null_graph(), Vertex=None):
 
 # To demonstrate this, view that vertex 4 of the crab graph has two leaves.
 
-# In[29]:
+# In[30]:
 
 
 if __name__ == '__main__':
@@ -833,7 +863,7 @@ if __name__ == '__main__':
 
 # We now encapsulate the notion of f-preferred vertices with the following function.
 
-# In[30]:
+# In[31]:
 
 
 def pdDeletedComponent(Input_graph:nx.classes.graph=nx.null_graph(), Vertex=None):
@@ -870,7 +900,7 @@ def pdDeletedComponent(Input_graph:nx.classes.graph=nx.null_graph(), Vertex=None
 
 # Notice that since $\{10,11\}$ is an observed component of the vertex deleted subgraph of the Zim Graph minus vertex 9, pdDeletedComponent returns True. 
 
-# In[31]:
+# In[32]:
 
 
 if __name__ == '__main__':
@@ -899,7 +929,7 @@ if __name__ == '__main__':
 
 # The previous 2 functions combine into the following algorithm that determins preferred vertices.
 
-# In[32]:
+# In[33]:
 
 
 def Pref(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False):
@@ -949,7 +979,7 @@ def Pref(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False):
 
 # Observe that there are 3 vertices in Pref(New England power grid)
 
-# In[33]:
+# In[34]:
 
 
 if __name__ == '__main__':
@@ -976,7 +1006,7 @@ if __name__ == '__main__':
 
 # The following encapsulates the idea of active vertices on a graph with blue vertices.
 
-# In[34]:
+# In[35]:
 
 
 def active_vertices(Input_graph:nx.classes.graph=nx.null_graph(), Blues:Sequence=set()):
@@ -999,7 +1029,7 @@ def active_vertices(Input_graph:nx.classes.graph=nx.null_graph(), Blues:Sequence
 
 # Active vertices after power dominating from vertex 2 on the Zim graph are only 9, 10, and 11. Only vertex 9 is high degree since vertices 10 and 11 have degree 2.
 
-# In[35]:
+# In[36]:
 
 
 if __name__ == '__main__':
@@ -1029,7 +1059,7 @@ if __name__ == '__main__':
 
 # Now we implement the calculation of the qualitative score for each non-preferred, non-redundant, vertex with degree 3 or higher.
 
-# In[36]:
+# In[37]:
 
 
 def determine_qual_scores(Input_graph:nx.classes.graph=nx.null_graph(), ValidVertices:Sequence=set(), Blues:Sequence=list(), PreferredVertices:Sequence=list(), Contracted:bool=False):
@@ -1076,7 +1106,7 @@ def determine_qual_scores(Input_graph:nx.classes.graph=nx.null_graph(), ValidVer
 
 # Now we print the Zim graph with labels being the calculated qualitative score
 
-# In[37]:
+# In[38]:
 
 
 if __name__ == '__main__':
@@ -1100,7 +1130,7 @@ if __name__ == '__main__':
 
 # This first function returns all induced 4 cycles in the input graph.
 
-# In[38]:
+# In[39]:
 
 
 def induced_4_cycles(Input_graph:nx.classes.graph=nx.null_graph()):
@@ -1122,7 +1152,7 @@ def induced_4_cycles(Input_graph:nx.classes.graph=nx.null_graph()):
 
 # View the induced 4 cycles in the Zim graph.
 
-# In[39]:
+# In[40]:
 
 
 if __name__ == '__main__':
@@ -1135,7 +1165,7 @@ if __name__ == '__main__':
 
 # A fort is a special induced $C_4$ fort when there are 2 non-adjacent degree 2 vertices.
 
-# In[40]:
+# In[41]:
 
 
 def induced_cycle_forts(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False):
@@ -1173,7 +1203,7 @@ def induced_cycle_forts(Input_graph:nx.classes.graph=nx.null_graph(), Contracted
 
 # View the induced 4-cycle forts in the New England power grid when the node 32 is removed, leaving a single induced $C_4$ fort.
 
-# In[41]:
+# In[42]:
 
 
 if __name__ == '__main__':
@@ -1200,7 +1230,7 @@ if __name__ == '__main__':
 
 # Taking into consideration that these types of forts can overlap, the following function collapses overlaping induced $C_4$ forts.
 
-# In[42]:
+# In[43]:
 
 
 def reduce_cycle_forts(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False, Blues:Sequence=set()):
@@ -1235,7 +1265,7 @@ def reduce_cycle_forts(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:
 
 # By slightly modifying the New England power grid, we can force there to be overlapping induced $C_4$ forts. View the following.
 
-# In[43]:
+# In[44]:
 
 
 if __name__ == '__main__':
@@ -1264,7 +1294,7 @@ if __name__ == '__main__':
 
 # The entrance of a set of vertices is defined to be the set of vertices adjacent to vertices in the given set, but not in the given set itself. The following function implements this.
 
-# In[44]:
+# In[45]:
 
 
 def entrance(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:Sequence=set()):
@@ -1286,7 +1316,7 @@ def entrance(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:Sequence=set
 
 # View the entrance vertices for the induced $C_4$ forts found in the modified New England power grid.
 
-# In[45]:
+# In[46]:
 
 
 if __name__ == '__main__':
@@ -1316,7 +1346,7 @@ if __name__ == '__main__':
 
 # The following function returns a lower bound for a minimum set that intersects non-trivially with the input collection. This problem is NP-complete and can be reduced to the domination problem.
 
-# In[46]:
+# In[47]:
 
 
 def approximate_order_phi(Collection:Sequence=list()):
@@ -1341,7 +1371,7 @@ def approximate_order_phi(Collection:Sequence=list()):
 
 # Observe that one must select at least 3 items from the following colleciotn to intersect non-trivially with each element in the following collection.
 
-# In[47]:
+# In[48]:
 
 
 if __name__ == '__main__':
@@ -1356,7 +1386,7 @@ if __name__ == '__main__':
 
 # The following function ensures that the given subset intersects non-trivially with the required set. This, in combination with the previous function, ensure that the PDT only inspects potential PDSs that intersect non-trivially with each set in Φ
 
-# In[48]:
+# In[49]:
 
 
 def intersects_non_trivially_with_all(Subset:Sequence=set(), Required:Sequence=set()):
@@ -1378,7 +1408,7 @@ def intersects_non_trivially_with_all(Subset:Sequence=set(), Required:Sequence=s
 
 # Observe the following output.
 
-# In[49]:
+# In[50]:
 
 
 if __name__ == '__main__':
@@ -1393,7 +1423,7 @@ if __name__ == '__main__':
 
 # We now have the framework to generate the potential power domianting sets. We include a PMU at each vertex in Pref, and we enforce that each set intersects nontrivially with each set in Pev(G')
 
-# In[50]:
+# In[51]:
 
 
 def _potential_pds_iterator(RequiredVertices:Sequence=list(), CycleEntrances:Sequence=set(), ActiveVertices:Sequence=set(), nAdditionalVertices:int=0):
@@ -1429,7 +1459,7 @@ def _potential_pds_iterator(RequiredVertices:Sequence=list(), CycleEntrances:Seq
 
 # We now begin the framework for the implementation of parallel computing in the PDT. The next function takes an input iterator, and returns chunks of it of the given size.
 
-# In[51]:
+# In[52]:
 
 
 def _chunkerator(Iterator:Sequence=set(), Chunk_size:int=0):
@@ -1459,7 +1489,7 @@ def _chunkerator(Iterator:Sequence=set(), Chunk_size:int=0):
 
 # For example, observe how the first 10 numbers, chunked in groups of 3, is $\{1, 2, 3\}, \{4, 5, 6\}, \{7, 8, 9\}, \{10\}$
 
-# In[52]:
+# In[53]:
 
 
 if __name__ == '__main__':
@@ -1470,7 +1500,7 @@ if __name__ == '__main__':
 
 # The following function is now able to implement a parallel search for a power dominating set.
 
-# In[53]:
+# In[54]:
 
 
 def _parallel_check(Function:Callable, Arguments:Sequence=set(), Chunk_size=500000, Number_workers:int=0):
@@ -1516,7 +1546,7 @@ def _parallel_check(Function:Callable, Arguments:Sequence=set(), Chunk_size=5000
 
 # We now implement the parallel check, but with the first 50000 potential power dominating sets being checked on a single thread before branching.
 
-# In[54]:
+# In[55]:
 
 
 def CheckForPDSWithAdditional(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False, PreferredVertices:Sequence=list(), CycleEntrances:Sequence=set(), ActiveVertices:Sequence=set(), Blues:Sequence=set(), nAdditionalVertices:int=0, Number_workers:int=0):
@@ -1596,7 +1626,7 @@ def CheckForPDSWithAdditional(Input_graph:nx.classes.graph=nx.null_graph(), Cont
 
 # Notice the following power dominating set that includes 3, additional, non-preferred, non-redundant, and non-low-degree vertices.
 
-# In[55]:
+# In[56]:
 
 
 if __name__ == '__main__':
@@ -1623,7 +1653,7 @@ if __name__ == '__main__':
 
 # We now implement a function that allows the user to check for a minimum power dominating set of $G'$ subject to Pref($G'$) of a fixed size, in a parallel manner. 
 
-# In[56]:
+# In[57]:
 
 
 def CheckForPDSOfSize(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False, PreferredVertices:Sequence=list(), CycleEntrances:Sequence=set(), ActiveVertices:Sequence=set(), Blues:Sequence=set(), Placement_size:int=0, Number_workers:int=0):
@@ -1691,7 +1721,7 @@ def CheckForPDSOfSize(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:b
 
 # Observe a minimum power dominating set of size 3 of the Zim Graph.
 
-# In[57]:
+# In[58]:
 
 
 if __name__ == '__main__':
@@ -1718,7 +1748,7 @@ if __name__ == '__main__':
 
 # We now implement logic to determine the minimum power dominating set of a given input graph.
 
-# In[58]:
+# In[59]:
 
 
 def PDT_minpds_connected(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False, PreferredVertices:Sequence=list(), CycleEntrances:Sequence=set(), ActiveVertices:Sequence=set(), Blues:Sequence=set(), Number_workers:int=0):
@@ -1752,7 +1782,7 @@ def PDT_minpds_connected(Input_graph:nx.classes.graph=nx.null_graph(), Contracte
         Contracted = True
 
     # As an edge case, if there are no vertices degree 3 or higher, then any vertex is a power dominating set
-    if not any(vertex for vertex,degree in Input_graph.degree() if degree > 3):
+    if not any(vertex for vertex,degree in Input_graph.degree() if degree >= 3):
         return [next(x for x in Input_graph.nodes),]
     
     # If Pref(G') has not yet been calculated, then we calculate it.
@@ -1793,7 +1823,7 @@ def PDT_minpds_connected(Input_graph:nx.classes.graph=nx.null_graph(), Contracte
 
 # Notice that the PDT determines a minimum power dominating set containing '9' for the Zim graph
 
-# In[59]:
+# In[60]:
 
 
 if __name__ == '__main__':
@@ -1820,7 +1850,7 @@ if __name__ == '__main__':
 
 # We now provide a function that intakes any graph, not just connected, and returns a minimum power dominating set
 
-# In[60]:
+# In[61]:
 
 
 def PDT_minpds(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=False, PreferredVertices:Sequence=list(), CycleEntrances:Sequence=set(), ActiveVertices:Sequence=set(), Blues:Sequence=set(), Size:int=0, Number_workers:int=0):
@@ -1852,16 +1882,6 @@ def PDT_minpds(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=Fal
     if not Contracted:
         Input_graph = ContractGraph(Input_graph)
         Contracted = True
-    
-    # If Pref(G') has not yet been calculated, then we calculate it.
-    if not PreferredVertices:
-        PreferredVertices = Pref(Input_graph, Contracted)
-
-    # Blues have not been calculated, then we determine Obs(G';Pref(G'))
-    if not Blues:
-        Blues = PowerDominate(Input_graph, PreferredVertices)
-    if len(Blues) == Input_graph.number_of_nodes():
-        return PreferredVertices
 
     # If the entrance of C_4 forts has not been calculated, then we calculate it.
     if not CycleEntrances:
@@ -1872,8 +1892,12 @@ def PDT_minpds(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=Fal
     for component_vertices in nx.connected_components(Input_graph):
       # We initialize all of the parameters that correspond to just this component
       connected_component = nx.subgraph(Input_graph, component_vertices)
-      component_pref = list(set(component_vertices).intersection(set(PreferredVertices)))
-      component_blues = list(set(Blues).intersection(component_vertices))
+      component_pref = list(set(component_vertices).intersection(set(PreferredVertices))) if PreferredVertices else Pref(connected_component, Contracted)
+      component_blues = list(set(Blues).intersection(component_vertices)) if Blues else PowerDominate(connected_component, component_pref)
+      # If pref of this component power dominates the component, then we append this to the running PDS, and continue to the next component
+      if len(component_blues) == connected_component.number_of_nodes():
+        [PDS.append(vertex) for vertex in component_pref]
+        continue
       component_pev = list(cycle_entrance for cycle_entrance in CycleEntrances if cycle_entrance.intersection(component_vertices))
       component_valids = active_vertices(connected_component, component_blues)
       component_qual_score_dictionary = determine_qual_scores(connected_component, component_valids, component_blues, component_pref, Contracted)
@@ -1904,7 +1928,7 @@ def PDT_minpds(Input_graph:nx.classes.graph=nx.null_graph(), Contracted:bool=Fal
 
 # Now observe the power dominating set for two disjoint Zim graphs
 
-# In[61]:
+# In[62]:
 
 
 if __name__ == '__main__':
@@ -1931,7 +1955,7 @@ if __name__ == '__main__':
 
 # Also observe the minimum power dominating set of a Zim Graph with an additional, isolated, vertex
 
-# In[62]:
+# In[63]:
 
 
 if __name__ == '__main__':
@@ -1958,7 +1982,7 @@ if __name__ == '__main__':
 
 # If the specific minimum power dominating set is not required and only the power domination number of the given graph is needed, the next function returns that number.
 
-# In[63]:
+# In[64]:
 
 
 def PDT_pdn(Input_graph:nx.classes.graph=nx.null_graph(), Number_workers:int=0):
@@ -1988,7 +2012,7 @@ def PDT_pdn(Input_graph:nx.classes.graph=nx.null_graph(), Number_workers:int=0):
 
 # Notice that the power domination number of the Zim graph is 2, as previously observed.
 
-# In[64]:
+# In[65]:
 
 
 if __name__ == '__main__':
@@ -2001,7 +2025,7 @@ if __name__ == '__main__':
 
 # We now implement an iterator that returns all power dominating sets of a given size one at a time, with the use of an iterator
 
-# In[65]:
+# In[66]:
 
 
 def allpds_of_size(Input_graph:nx.classes.graph=nx.null_graph(), Placement_size:int=0):
@@ -2031,7 +2055,7 @@ def allpds_of_size(Input_graph:nx.classes.graph=nx.null_graph(), Placement_size:
 
 # Observe that each subset of 10 vertices of the Zim graph form a power dominating set 
 
-# In[66]:
+# In[67]:
 
 
 if __name__ == '__main__':
@@ -2044,7 +2068,7 @@ if __name__ == '__main__':
 
 # We then implement a specialized iterator that yields each minimum power dominating set
 
-# In[67]:
+# In[68]:
 
 
 def allminpds(Input_graph:nx.classes.graph=nx.null_graph(), PDN:int=0, Number_workers:int=0):
@@ -2072,7 +2096,7 @@ def allminpds(Input_graph:nx.classes.graph=nx.null_graph(), PDN:int=0, Number_wo
 
 # Observe all 13 of the minimum power dominating sets of the Zim graph
 
-# In[68]:
+# In[69]:
 
 
 if __name__ == '__main__':
@@ -2085,7 +2109,7 @@ if __name__ == '__main__':
 
 # If all power dominating sets of a given size are wanted all at once, we implement the following that does such in a parallel fashion. Note, this may have a long runtime for large graphs, as none of the optimizaiton like contracting, nor the restrictions the PDT uses is implemented.
 
-# In[69]:
+# In[70]:
 
 
 def parallel_allpds_of_size(Input_graph:nx.classes.graph=nx.null_graph(), Placement_size:int=0, Number_workers:int=0):
@@ -2122,7 +2146,7 @@ def parallel_allpds_of_size(Input_graph:nx.classes.graph=nx.null_graph(), Placem
 
 # Observe all power dominating sets of size 3 for the Zim graph:
 
-# In[70]:
+# In[71]:
 
 
 if __name__ == '__main__':
@@ -2140,7 +2164,7 @@ if __name__ == '__main__':
 
 # The following function implements the determination of if a set is a zero forcing set.
 
-# In[71]:
+# In[72]:
 
 
 def isZFS(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:Sequence=set()):
@@ -2170,7 +2194,7 @@ def isZFS(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:Sequence=set())
 
 # To demonstrate this function, we see that an endpoint of a path is a zero forcing set of the path.
 
-# In[72]:
+# In[73]:
 
 
 if __name__ == '__main__':
@@ -2193,7 +2217,7 @@ if __name__ == '__main__':
 
 # A zero forcing fort is a set of vertices for which there does not exist at least one vertex in the vertex set, not in the potential zero forcing fort, that is adjacent to exactly one vertex in the potential zero forcing fort. The following function implements that logical test.
 
-# In[73]:
+# In[74]:
 
 
 def isZeroForcingFort(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:Sequence=set()):
@@ -2226,7 +2250,7 @@ def isZeroForcingFort(Input_graph:nx.classes.graph=nx.null_graph(), Vertices:Seq
 
 # To demonstrate this, we see that [10, 11] is a zero forcing fort of the zim graph, while [9, 10, 11] is not a zero forcing fort since vertex 5 is adjacent to only one vertex, vertex 9, in the set [9, 10, 11].
 
-# In[74]:
+# In[75]:
 
 
 if __name__ == '__main__':
@@ -2241,7 +2265,7 @@ if __name__ == '__main__':
 
 # A failed power dominating set, is any set of vertices that does not observe the entire graph at the termination of the power domination process. The following functions handle determining if a set is a failed power dominating set of a given graph, determining a maximally-sized failed power dominating set of a given graph, and the failed power domination number (the size of a maximally-sized failed power dominating set) of a given graph.
 
-# In[75]:
+# In[76]:
 
 
 def isFPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=set(), **kwargs):
@@ -2285,7 +2309,7 @@ def isFPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=
 
 # A single vertex in a clique of the barbell graph is a failed power dominating set, and two vertices from different cliques is not a failed power dominating set.
 
-# In[76]:
+# In[77]:
 
 
 if __name__ == '__main__':
@@ -2300,7 +2324,7 @@ if __name__ == '__main__':
 
 # In almost a reverse notion to power dominating sets, what is important to failed power dominating is not determining the smallest set that is a failed power dominating set. Determining a maximally-sized failed power dominating set is implemented in the following function.
 
-# In[77]:
+# In[78]:
 
 
 def maxfpds(Input_graph:nx.classes.graph=nx.null_graph()):
@@ -2331,7 +2355,7 @@ def maxfpds(Input_graph:nx.classes.graph=nx.null_graph()):
 
 # The largest failed power dominating set is the complement of a minimally-sized zero-forcing fort. As such, all vertices in the Zim graph except the closed neighborhood of one of the smallest zero-forcing fort (vertices 10 and 11 form the smallest zero-forcing fort) form a maximum failed power dominating set, as demonstrated below.
 
-# In[78]:
+# In[79]:
 
 
 if __name__ == '__main__':
@@ -2356,7 +2380,7 @@ if __name__ == '__main__':
 
 # Similar to power domination, sometimes all that is desired is the cardinality of some maximum failed power dominating set. The next function determins this as the failed power domination number of an input graph.
 
-# In[79]:
+# In[80]:
 
 
 def fpdn(Input_graph:nx.classes.graph=nx.null_graph()):
@@ -2377,7 +2401,7 @@ def fpdn(Input_graph:nx.classes.graph=nx.null_graph()):
 
 # As shown previously, we see that the failed power domiation number of the Zim graph is 8. This then means that any set of 9 vertices or more, on the zim graph, is a power dominating set.
 
-# In[80]:
+# In[81]:
 
 
 if __name__ == '__main__':
@@ -2389,7 +2413,7 @@ if __name__ == '__main__':
 
 # A k-fault-tolerant power dominating set is any set of vertices where any subset where k vertices are removed from the initial set result in a power dominating set. The following function implements logic to test if a given pmu placement is a k-fault-tolerant power dominating set.
 
-# In[81]:
+# In[82]:
 
 
 def isKFPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=set(), K:int=0, **kwargs):
@@ -2441,7 +2465,7 @@ def isKFPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence
 
 # Placing 2 pmus at different vertices in each clique of the barbell graph is a 1-fault-tolerant power dominating set, as shown below.
 
-# In[82]:
+# In[83]:
 
 
 if __name__ == '__main__':
@@ -2466,7 +2490,7 @@ if __name__ == '__main__':
 
 # Similar to power domination, minimum k-fault-tolerant power dominating sets are of interest to graph theorists. The following function implements a parallel search for a minimum k-fault-tolerant power dominating set of a given graph.
 
-# In[83]:
+# In[84]:
 
 
 def min_kfpds(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0, Number_workers:int=0, **kwargs):
@@ -2528,7 +2552,7 @@ def min_kfpds(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0, Number_work
 
 # We observe that the 1-fault-tolerant power dominating set from above is, in fact, a minimum 1-fault-tolerant power dominating set.
 
-# In[84]:
+# In[85]:
 
 
 if __name__ == '__main__':
@@ -2557,7 +2581,7 @@ if __name__ == '__main__':
 
 # As with many graph parameters, just the size of a valid set is required, so we give a function that returns the required number of PMUs to construct a minimum k-fault-tolerant power dominating set.
 
-# In[85]:
+# In[86]:
 
 
 def kfpdn(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0):
@@ -2580,7 +2604,7 @@ def kfpdn(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0):
 
 # We see that at minimum, 4 PMUs are necessary for a minimum 1-fault-tolerant power dominating set.
 
-# In[86]:
+# In[87]:
 
 
 if __name__ == '__main__':
@@ -2596,7 +2620,7 @@ if __name__ == '__main__':
 
 # Different from k-fault-tolerant power dominating sets, k-PMU-defect-robust power dominating sets allow multiple PMUs on a single vertex. The logic for determining if a pmu placement is k-PMU-defect-robust is the same as determining if it is k-fault-tolerant, so we can reuse that module.
 
-# In[87]:
+# In[88]:
 
 
 def isKRPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=list(), K:int=0, **kwargs):
@@ -2622,7 +2646,7 @@ def isKRPDS(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence
 
 # Classically, 2 PMUs located at the center of a star is a 1-PMU-defect-robust power dominaing set, as we can view from this example.
 
-# In[88]:
+# In[89]:
 
 
 if __name__ == '__main__':
@@ -2642,7 +2666,7 @@ if __name__ == '__main__':
 
 # With the semantic difference between k-fault-tolerant power dominating sets and k-PMU-defect-robust power dominating sets being multiplacements, the switch in logic comes in the form of combinations of vertices **WITH** replacement vs **WITHOUT** replacement. The following implements the difference.
 
-# In[89]:
+# In[90]:
 
 
 def min_krpds(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0, Number_workers:int=0, **kwargs):
@@ -2704,7 +2728,7 @@ def min_krpds(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0, Number_work
 
 # Classically, 2 PMUs located at the center of a star is a 1-PMU-defect-robust power dominaing set, as we can view from this example.
 
-# In[90]:
+# In[91]:
 
 
 if __name__ == '__main__':
@@ -2720,7 +2744,7 @@ if __name__ == '__main__':
 
 # Like other graph parameters, the following returns the k-PMU-defect power domination number of the given graph.
 
-# In[91]:
+# In[92]:
 
 
 def krpdn(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0):
@@ -2743,7 +2767,7 @@ def krpdn(Input_graph:nx.classes.graph=nx.null_graph(), K:int=0):
 
 # The following shows the difference between the k-fault-tolerant power domination number and the k-PMU-defect-robust power domination number of the star graph. Far fewer PMUs are required to form a k-PMU-defect-robust power dominating set as opposed to a k-fault-tolerant power dominating set.
 
-# In[92]:
+# In[93]:
 
 
 if __name__ == '__main__':
@@ -2766,7 +2790,7 @@ if __name__ == '__main__':
 
 # The following is an internal function that returns a list of the coefficients to the expected value polynomial in binomial form for a given graph and PMU placement.
 
-# In[93]:
+# In[94]:
 
 
 def fragile_binomial_coefficients(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=set()):
@@ -2792,7 +2816,7 @@ def fragile_binomial_coefficients(Input_graph:nx.classes.graph=nx.null_graph(), 
 
 # As described, the expected value polynomial of the crab graph and the PMU placement {4, 5} is 0(q)^2 + 10(1-q)(q) + 7(1-q)^2, as confirmed by the coefficients being 0, 10, and 7.
 
-# In[94]:
+# In[95]:
 
 
 if __name__ == '__main__':
@@ -2819,7 +2843,7 @@ if __name__ == '__main__':
 
 # The following funciton abstracts the fragile_coefficients function and returns a symbolic function representation of the expected value polynomial.
 
-# In[95]:
+# In[96]:
 
 
 def fragile_expected_value_polynomial(Binomial_coefficients:Sequence=list()):
@@ -2843,7 +2867,7 @@ def fragile_expected_value_polynomial(Binomial_coefficients:Sequence=list()):
 
 # Using the previously calculated coefficients, we can generate the symbolic function for the expected value polynomial for the placement {4, 5} on the crab graph.
 
-# In[96]:
+# In[97]:
 
 
 if __name__ == '__main__':
@@ -2858,7 +2882,7 @@ if __name__ == '__main__':
 
 # The following forms the basis for fragile power domination. Given a graph and a particular PMU placement, this function returns a dictionary with important information about the placement.
 
-# In[97]:
+# In[98]:
 
 
 def fragile_placement_attributes(Input_graph:nx.classes.graph=nx.null_graph(), Pmu_placement:Sequence=list(), Placement_id:int=None):
@@ -2896,7 +2920,7 @@ def fragile_placement_attributes(Input_graph:nx.classes.graph=nx.null_graph(), P
 
 # Observe the requisite attributes for the PMU placement {4, 5} on the crab graph.
 
-# In[98]:
+# In[99]:
 
 
 if __name__ == '__main__':
@@ -2911,7 +2935,7 @@ if __name__ == '__main__':
 
 # We now inspect all possible PMU placements with the following function.
 
-# In[99]:
+# In[100]:
 
 
 def n_placement_polynomials(Input_graph:nx.classes.graph=nx.null_graph(), N:int=0, Multiplacements:bool=False):
@@ -2953,7 +2977,7 @@ def n_placement_polynomials(Input_graph:nx.classes.graph=nx.null_graph(), N:int=
 
 # There are 28 possible PMU placements on the crab graph when allowing multiple PMUs at a single vertex. The following displays the placement attributes for each of these placements.
 
-# In[100]:
+# In[101]:
 
 
 if __name__ == '__main__':
@@ -2980,7 +3004,7 @@ if __name__ == '__main__':
 
 # By inspection, there are plenty of placements that yield identical expected value polynomials. The following function aggregates all placements that result in the same polynomial into equivalency classes.
 
-# In[101]:
+# In[102]:
 
 
 def n_placement_polynomials_up_to_equivalency(Input_graph:nx.classes.graph=nx.null_graph(), N:int=0, Multiplacements:bool=False):
@@ -3020,7 +3044,7 @@ def n_placement_polynomials_up_to_equivalency(Input_graph:nx.classes.graph=nx.nu
 
 # What was 28 unique placements of 2 PMUs on the crab graph, results in 10 unique expected value polynomials.
 
-# In[102]:
+# In[103]:
 
 
 if __name__ == '__main__':
@@ -3050,7 +3074,7 @@ if __name__ == '__main__':
 
 # The following gives a standardized plot of the non-equivalent expected value polynomials along with a representative pmu placement.
 
-# In[103]:
+# In[104]:
 
 
 def display_n_placement_polynomials_up_to_equivalency(Input_graph:nx.classes.graph=nx.null_graph(), N:int=0, Multiplacements:bool=False):
@@ -3120,7 +3144,7 @@ def display_n_placement_polynomials_up_to_equivalency(Input_graph:nx.classes.gra
 
 # Using this function, we see each representative polynomial is printed alongside its placement attributes with the addition of two new parameters: color and line type. These correspond to the appropriate values displayed in the generated plot.
 
-# In[104]:
+# In[105]:
 
 
 if __name__ == '__main__':
