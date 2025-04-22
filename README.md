@@ -1,11 +1,16 @@
 # PowerDominationToolbox
 
 ## CoCalc/Sage Integration
-To maintain compatability with SageMath and the Minimum Rank Sage Library, the following commands will load this library:
-
+To maintain compatability with SageMath, the Power Domination Toolbox is installable into the Sage environment.
+The following will install the Power Domination Toolbox into the Sage environment.
+```bash
+sage -pip install powerdominationtoolbox
+```
+Graphs must then be converted from Sage Graph objects to NetworkX graph objects.
+This can be done with the following, supposing that ```graph_1``` is a graph made in some Sage way:
 ```python
-URL = 'https://raw.githubusercontent.com/JibJibFlutterhousen/PowerDominationToolbox/main/src/powerdominationtoolbox/powerdominationtoolbox.py'
-load(URL)
+from powerdominationtoolbox.powerdominationtoolbox import sage_to_networkx_graph
+converted_graph = sage_to_networkx_graph(graph_1)
 ```
 
 For importing this library from witin CoCalc with a free account you must do the following because CoCalc does not allow an outside internet connection with a free account.
@@ -13,13 +18,16 @@ For importing this library from witin CoCalc with a free account you must do the
 1. Download this code as a zip file.
 2. Extract the zip file on your local machine.
 3. Go to your project in CoCalc and upload the file "powerdominationtoolbox.py".
-4. Execute the following command in your sage worksheet.
+4. Execute the load command in your sage worksheet.
+Note, because the powerdominationtoolbox.py file itself contains prints and figure drawing, CoCalc may display these prints / figures when executing the following command.
 ```python
 load("powerdominationtoolbox.py")
 ```
 
 ## Using the Power Domination Toolbox
-The PDT offers functions for:
+The PDT offers functions for various capabilities.
+The following is a non-exhaustive list of usefull functions.
+The [jupyter notebook within examples](https://github.com/JibJibFlutterhousen/PowerDominationToolbox/blob/main/examples/Power%20Domination%20Toolbox%20(v2).ipynb) shows usage of each function within the Power Domination Toolbox after the explicit code for the function.
 1. Zero forcing, ```ZeroForce```,
 2. Domination, ```Dominate```,
 3. Power domination, ```PowerDominate```,
